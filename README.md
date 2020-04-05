@@ -20,6 +20,19 @@ Nothing to "generate", just some classes to let you develop and maintain CRUD ba
 
 ## Install in Laravel 6.x/7.x
 
+```json
+{
+  "repositories": [
+    {
+      "url": "https://github.com/masroore/rapyd-laravel.git",
+      "type": "git"
+    }
+  ],
+  "require": {
+    "masroore/rapyd": "master"
+  }
+}
+```
 
 require the package in your Laravel >= 6.x  
 `$ composer require masroore/rapyd`
