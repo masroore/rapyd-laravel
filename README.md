@@ -18,25 +18,14 @@ Nothing to "generate", just some classes to let you develop and maintain CRUD ba
  
 
 
-## Install in Laravel 5.6, .. 5.2, 5.1, 5.0, 4.*
+## Install in Laravel 6.x/7.x
 
 
-require the package in your Laravel >= 5.6  
-`$ composer require zofe/rapyd`
+require the package in your Laravel >= 6.x  
+`$ composer require masroore/rapyd`
 
 then publish assets:  
 `$ php artisan vendor:publish`  
-
-you can also require a specific version:
-
-`zofe/rapyd:"2.2.*"` for Laravel 5.2  
-`zofe/rapyd:"2.1.*"` for Laravel 5.1  
-`zofe/rapyd:"2.0.*"` for Laravel 5.0
-
-
-note: for Laravel <=5.4 you need to add the provider in your config/app.php:
-
-`Zofe\Rapyd\RapydServiceProvider::class` 
 
 
 ## A couple of minutes of your time before you start
