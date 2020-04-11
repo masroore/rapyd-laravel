@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 use Request;
 use Response;
 use View;
-use Zofe\Rapyd\DataSet as DataSet;
+use Zofe\Rapyd\DataSet;
 use Zofe\Rapyd\Persistence;
 
 class DataGrid extends DataSet
@@ -20,6 +20,7 @@ class DataGrid extends DataSet
     public $output = '';
     public $attributes = ['class' => 'table'];
     public $checkbox_form = false;
+    public $thead_class = '';
 
     protected $fields = [];
 
@@ -54,12 +55,12 @@ class DataGrid extends DataSet
 
     //todo: like "field" for DataForm, should be nice to work with "cell" as instance and "row" as collection of cells
 
-    public function build($view = '')
+    public function build($view = ''): ?string
     {
-        if ('' != $this->output) {
-            return;
+        if (!blank($this->output)) {
+            return null;
         }
-        blank($view) and $view = 'rapyd::datagrid';
+        blank($view) && $view = 'rapyd::datagrid';
         parent::build();
 
         Persistence::save();
@@ -69,7 +70,7 @@ class DataGrid extends DataSet
 
             foreach ($this->columns as $column) {
                 $cell = new Cell($column->name);
-                $sanitize = (\count($column->filters) || $column->cell_callable) ? false : true;
+                $sanitize = !(\count($column->filters) || $column->cell_callable);
                 $value = $this->getCellValue($column, $tablerow, $sanitize);
                 $cell->value($value);
                 $cell->parseFilters($column->filters);

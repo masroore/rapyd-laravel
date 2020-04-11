@@ -3,8 +3,7 @@
 namespace Zofe\Rapyd\DataForm\Field;
 
 use Collective\Html\FormFacade as Form;
-use Input;
-use Rapyd;
+use Illuminate\Support\Facades\Request;
 
 class Map extends Field
 {
@@ -53,11 +52,11 @@ class Map extends Field
 
     public function getValue()
     {
-        $process = (Input::get('search') || Input::get('save')) ? true : false;
+        $process = (Request::get('search') || Request::get('save')) ? true : false;
 
-        if (true == $this->request_refill && $process && Input::exists($this->lat)) {
-            $this->value['lat'] = Input::get($this->lat);
-            $this->value['lon'] = Input::get($this->lon);
+        if (true == $this->request_refill && $process && Request::exists($this->lat)) {
+            $this->value['lat'] = Request::get($this->lat);
+            $this->value['lon'] = Request::get($this->lon);
             $this->is_refill = true;
         } elseif (('create' == $this->status) && (null != $this->insert_value)) {
             $this->value = $this->insert_value;
@@ -72,10 +71,10 @@ class Map extends Field
 
     public function getNewValue()
     {
-        $process = (Input::get('search') || Input::get('save')) ? true : false;
-        if ($process && Input::exists($this->lat)) {
-            $this->new_value['lat'] = Input::get($this->lat);
-            $this->new_value['lon'] = Input::get($this->lon);
+        $process = (Request::get('search') || Request::get('save')) ? true : false;
+        if ($process && Request::exists($this->lat)) {
+            $this->new_value['lat'] = Request::get($this->lat);
+            $this->new_value['lon'] = Request::get($this->lon);
         } elseif (('insert' == $this->action) && (null != $this->insert_value)) {
             $this->edited = true;
             $this->new_value = $this->insert_value;

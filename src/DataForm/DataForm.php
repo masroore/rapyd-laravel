@@ -7,7 +7,7 @@ use Closure;
 use Collective\Html\FormFacade as Form;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
@@ -158,10 +158,10 @@ class DataForm extends Widget
      *
      * @return static
      */
-    public static function source($source = '')
+    public static function source(?Model $source = null)
     {
         $ins = new static();
-        if (\is_object($source) && is_a($source, "\Illuminate\Database\Eloquent\Model")) {
+        if (\is_object($source) && is_a($source, Model::class)) {
             $ins->model = $source;
         }
         $ins->cid = $ins->getIdentifier();
@@ -201,10 +201,10 @@ class DataForm extends Widget
         if (isset($this->attributes['class']) and false !== mb_strpos($this->attributes['class'], 'with-placeholders')) {
             $this->has_placeholders = true;
         }
-        if ('' != $this->output) {
+        if (!blank($this->output)) {
             return;
         }
-        if ('' != $view) {
+        if (!blank($view)) {
             $this->view = $view;
         }
 
@@ -214,9 +214,9 @@ class DataForm extends Widget
         if ($this->form_callable && 'success' == $this->process_status) {
             $callable = $this->form_callable;
             $result = $callable($this);
-            if ($result && is_a($result, 'Illuminate\Http\RedirectResponse')) {
+            if ($result && is_a($result, RedirectResponse::class)) {
                 $this->redirect = $result;
-            } elseif ($result && is_a($result, 'Illuminate\View\View')) {
+            } elseif ($result && is_a($result, \Illuminate\View\View::class)) {
                 $this->custom_output = $result;
             }
 
@@ -360,12 +360,8 @@ class DataForm extends Widget
 
     /**
      * get field instance from fields array.
-     *
-     * @param string $field_name
-     *
-     * @return \Zofe\Rapyd\DataForm\Field $field
      */
-    public function field($field_name, array $attributes = [])
+    public function field(string $field_name, array $attributes = []): Field
     {
         if (isset($this->fields[$field_name])) {
             $field = $this->fields[$field_name];
@@ -383,7 +379,7 @@ class DataForm extends Widget
      *
      * @param array $messages
      */
-    public function errors($messages = [])
+    public function errors($messages = []): void
     {
         $this->validator_messages = $messages;
     }
@@ -403,11 +399,9 @@ class DataForm extends Widget
     }
 
     /**
-     * @param string $process_status
-     *
-     * @return bool
+     * @param array|string $process_status
      */
-    public function on($process_status = 'false')
+    public function on($process_status = 'false'): bool
     {
         if (\is_array($process_status)) {
             return (bool) \in_array($this->process_status, $process_status);
@@ -416,10 +410,7 @@ class DataForm extends Widget
         return $this->process_status == $process_status;
     }
 
-    /**
-     * @return string
-     */
-    public function getRedirect()
+    public function getRedirect(): string
     {
         return $this->redirect;
     }
@@ -437,7 +428,7 @@ class DataForm extends Widget
             $array['form'] = $form;
         }
         if ($this->hasRedirect()) {
-            return (is_a($this->redirect, 'Illuminate\Http\RedirectResponse')) ? $this->redirect : Redirect::to($this->redirect);
+            return ($this->redirect instanceof RedirectResponse) ? $this->redirect : Redirect::to($this->redirect);
         }
         if ($this->hasCustomOutput()) {
             return $this->custom_output;
@@ -446,26 +437,18 @@ class DataForm extends Widget
         return View::make($viewname, $array);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasRedirect()
+    public function hasRedirect(): bool
     {
-        return (null != $this->redirect) ? true : false;
+        return null != $this->redirect;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasCustomOutput()
+    public function hasCustomOutput(): bool
     {
-        return (null != $this->custom_output) ? true : false;
+        return null != $this->custom_output;
     }
 
     /**
      * alias for saved.
-     *
-     * @param callable $callable
      */
     public function passed(Closure $callable)
     {
@@ -474,8 +457,6 @@ class DataForm extends Widget
 
     /**
      * build form and check if process status is "success" then execute a callable.
-     *
-     * @param callable $callable
      */
     public function saved(Closure $callable)
     {
@@ -486,12 +467,12 @@ class DataForm extends Widget
      * Set a value to model without show anything (it appends an auto-field)
      * It set value on insert and update (but is configurable).
      *
-     * @param $field
+     * @param array|string $field
      * @param $value
      * @param bool $insert
      * @param bool $update
      */
-    public function set($field, $value = null, $insert = true, $update = true)
+    public function set($field, $value = null, $insert = true, $update = true): void
     {
         if (\is_array($field)) {
             foreach ($field as $key => $val) {
@@ -509,13 +490,7 @@ class DataForm extends Widget
         }
     }
 
-    /**
-     * @param string $name
-     * @param string $label
-     * @param string $type
-     * @param string $validation
-     */
-    public function add($name, $label, $type, $validation = '')
+    public function add(string $name, string $label, string $type, string $validation = ''): Field
     {
         if (false !== mb_strpos($type, '\\')) {
             $field_class = $type;
@@ -534,7 +509,7 @@ class DataForm extends Widget
             throw new InvalidArgumentException('Third argument («type») must point to class inherited Field class');
         }
 
-        if ('file' == $field_obj->type) {
+        if ('file' === $field_obj->type) {
             $this->multipart = true;
         }
 
@@ -555,7 +530,7 @@ class DataForm extends Widget
         return $this;
     }
 
-    protected function sniffStatus()
+    protected function sniffStatus(): void
     {
         if (isset($this->model)) {
             $this->status = ($this->model->exists) ? 'modify' : 'create';
@@ -636,7 +611,7 @@ class DataForm extends Widget
      */
     protected function isValid()
     {
-        if ('' != $this->error) {
+        if (!blank($this->error)) {
             return false;
         }
         foreach ($this->fields as $field) {
@@ -650,7 +625,7 @@ class DataForm extends Widget
             return !$this->validator->fails();
         }
         if (isset($rules)) {
-            $this->validator = Validator::make(Input::all(), $rules, $this->validator_messages, $attributes);
+            $this->validator = Validator::make(Request::all(), $rules, $this->validator_messages, $attributes);
 
             return !$this->validator->fails();
         }

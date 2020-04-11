@@ -4,7 +4,7 @@ namespace Zofe\Rapyd;
 
 use Collective\Html\HtmlFacade as HTML;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
 use Zofe\Rapyd\DataForm\DataForm;
 
 class Rapyd
@@ -156,7 +156,7 @@ class Rapyd
 
     public static function qs($value, $default = false)
     {
-        if ('id' == $value && !Input::has('id')) {
+        if ('id' == $value && !Request::has('id')) {
             $value = 'show|modify|delete|do_delete|update';
         }
         $url = new Url();

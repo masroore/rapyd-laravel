@@ -4,15 +4,15 @@ namespace Zofe\Rapyd\DataForm\Field;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
 use InvalidArgumentException;
 use Request;
 use Zofe\Rapyd\Helpers\HTML;
 use Zofe\Rapyd\Widget;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 abstract class Field extends Widget
 {
@@ -92,7 +92,7 @@ abstract class Field extends Widget
     public $layout = [
         'field_separator' => '<br />',
         'option_separator' => '',
-        'null_label' => '[null]',
+        'null_label' => '<i>(empty)</i>',
     ];
 
     public $rule = [];

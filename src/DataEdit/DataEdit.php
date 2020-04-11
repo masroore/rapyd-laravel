@@ -32,7 +32,7 @@ class DataEdit extends DataForm
      */
     public function back($actions = 'insert|update|do_delete', $url = '')
     {
-        if ('' == $url) {
+        if (blank($url)) {
             if (\count($this->links)) {
                 $url = array_pop($this->links);
             } else {
@@ -68,7 +68,7 @@ class DataEdit extends DataForm
      * detect dataedit status by qs,
      * if needed it find the record for show/modify/delete "status".
      */
-    protected function sniffStatus()
+    protected function sniffStatus(): void
     {
         $this->status = 'idle';
         ///// show /////
@@ -181,6 +181,7 @@ class DataEdit extends DataForm
                 }
 
                 break;
+
             case 'insert':
 
                 if ($this->on('error')) {
@@ -195,7 +196,9 @@ class DataEdit extends DataForm
                     }
                 }
                 break;
+
             case 'delete':
+
                 if ($this->on('error')) {
                     $this->message(trans('rapyd::rapyd.err'));
                 }
@@ -206,6 +209,7 @@ class DataEdit extends DataForm
                         $this->message(trans('rapyd::rapyd.deleted'));
                     }
                 }
+
                 break;
         }
 

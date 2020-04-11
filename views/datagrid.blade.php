@@ -3,9 +3,9 @@
 <div class="rpd-datagrid">
     @include('rapyd::toolbar', array('label'=>$label, 'buttons_right'=>$buttons['TR']))
     
-    <div class="table-responsive">
+    <div>
         <table{!! $dg->buildAttributes() !!}>
-            <thead>
+            <thead{!! rtrim( blank($dg->thead_class) ? '' : sprintf(' class="%s"', $dg->thead_class) ) !!}>
             <tr>
                 @foreach ($dg->columns as $column)
                     <th{!! $column->buildAttributes() !!}>

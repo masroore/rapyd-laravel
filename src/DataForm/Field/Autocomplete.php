@@ -3,7 +3,7 @@
 namespace Zofe\Rapyd\DataForm\Field;
 
 use Collective\Html\FormFacade as Form;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use stdClass;
 use Zofe\Rapyd\Rapyd;
@@ -161,8 +161,8 @@ class Autocomplete extends Field
             case 'create':
             case 'modify':
 
-                if (Input::get('auto_' . $this->name)) {
-                    $autocomplete = Input::get('auto_' . $this->name);
+                if (Request::get('auto_' . $this->name)) {
+                    $autocomplete = Request::get('auto_' . $this->name);
                 } elseif (null != $this->relation) {
                     $name = $this->rel_field;
                     $autocomplete = @$this->relation->get()->first()->$name;

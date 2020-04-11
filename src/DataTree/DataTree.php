@@ -6,11 +6,9 @@ use Baum\Node;
 use Collective\Html\FormFacade as Form;
 use DB;
 use Illuminate\Support\Collection;
-use Input;
+use Illuminate\Support\Facades\Request;
 use InvalidArgumentException;
 use LogicException;
-use Rapyd;
-use Request;
 use View;
 use Zofe\Rapyd\DataGrid\Cell;
 use Zofe\Rapyd\DataGrid\DataGrid;
@@ -46,11 +44,11 @@ class DataTree extends DataGrid
         return $instance;
     }
 
-    public function build($view = '')
+    public function build($view = ''): ?string
     {
         $this->initJsWidget();
 
-        '' == $view and $view = 'rapyd::datatree';
+        blank($view) and $view = 'rapyd::datatree';
 
         $this->open = Form::open($this->attributes);
         $this->close = Form::hidden('save', 1) . Form::close();
@@ -59,7 +57,7 @@ class DataTree extends DataGrid
         // because sometimes we have more than a tree widget on the same page
         // but just one save
 
-        if ('POST' == Request::method() && Input::get($this->name)) {
+        if (Request::isMethod('POST') && Request::get($this->name)) {
             $this->lockAndSave();
         }
 
@@ -254,7 +252,7 @@ $("[data-instance-id=\\"' . $this->attributes['data-instance-id'] . '\\"]").each
         // - the orthodox will send a json string
         // - the ajax version will send an array
 
-        $var = Input::get($this->name);
+        $var = Request::get($this->name);
         if (\is_string($var)) {
             $var = json_decode($var, true);
         }

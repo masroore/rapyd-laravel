@@ -5,7 +5,7 @@ namespace Zofe\Rapyd\DataForm\Field;
 use Closure;
 use Collective\Html\FormFacade as Form;
 use Event;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Request;
 use Intervention\Image\ImageManagerStatic as ImageManager;
 
 class Image extends File
@@ -115,7 +115,7 @@ class Image extends File
                 if ('' != $this->old_value) {
                     $output .= '<div class="clearfix">';
                     $output .= $this->thumb() . ' &nbsp;' . link_to($this->web_path . $this->value, $this->value, ['target' => '_blank']) . "<br />\n";
-                    $output .= Form::checkbox($this->name . '_remove', 1, (bool) Input::get($this->name . '_remove')) . ' ' . trans('rapyd::rapyd.delete') . " <br/>\n";
+                    $output .= Form::checkbox($this->name . '_remove', 1, (bool) Request::get($this->name . '_remove')) . ' ' . trans('rapyd::rapyd.delete') . " <br/>\n";
                     $output .= '</div>';
                 }
                 $output .= Form::file($this->name, $this->attributes);
